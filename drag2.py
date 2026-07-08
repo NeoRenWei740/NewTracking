@@ -469,8 +469,16 @@ with tab_tracker:
                 margin=dict(t=60, b=30, l=50, r=50),
                 legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5)
             )
-            fig_combo.update_xaxes(range=[selected_range[0], selected_range[1]], 
-                                   showline=True, linewidth=1, linecolor='gray', mirror=True)
+            # X-axes logic for the 3-axis graph
+            fig_combo.update_xaxes(
+                range=[selected_range[0], selected_range[1]], 
+                showline=True, 
+                linewidth=1, 
+                linecolor='gray', 
+                mirror=True,
+                title_text="Date (UTC)", 
+                tickformat="%Y-%m-%d %H:%M"
+            )
             fig_combo.update_yaxes(title_text=f"Distance to {ref_id} (km)", secondary_y=False, showgrid=False)
             fig_combo.update_yaxes(title_text="Relative Longitude (°)", secondary_y=True, showgrid=False)
             
@@ -507,10 +515,24 @@ with tab_tracker:
                         mode='lines+markers', line=dict(color=current_color), marker=dict(color=current_color)
                     ), row=row, col=1)
 
-            fig.update_layout(height=2300, hovermode="x unified", template="plotly_dark",
+            # Increased height slightly to accommodate the extra text from the dates on every graph
+            fig.update_layout(height=2600, hovermode="x unified", template="plotly_dark",
                                margin=dict(t=80, b=50, l=50, r=50))
-            fig.update_xaxes(range=[selected_range[0], selected_range[1]],
-                              showline=True, linewidth=1, linecolor='gray', mirror=True)
+            
+            # Updated X-axes logic: Forces tick labels (dates) to show on EVERY subplot
+            fig.update_xaxes(
+                range=[selected_range[0], selected_range[1]],
+                showline=True, 
+                linewidth=1, 
+                linecolor='gray', 
+                mirror=True,
+                tickformat="%Y-%m-%d %H:%M",
+                showticklabels=True  # <--- This line forces dates onto every graph
+            )
+            
+            # Explicitly apply Date title on the bottom-most plot
+            fig.update_xaxes(title_text="Date (UTC)", row=9, col=1)
+
             fig.update_yaxes(showline=True, linewidth=1, linecolor='gray', mirror=True)
             fig.update_annotations(yshift=15)
 
